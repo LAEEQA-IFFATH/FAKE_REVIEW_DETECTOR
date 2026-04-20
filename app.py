@@ -2,9 +2,16 @@ import streamlit as st
 import torch
 from transformers import BertTokenizer, BertForSequenceClassification
 
-# Load model
-tokenizer = BertTokenizer.from_pretrained("models/bert_model")
-model = BertForSequenceClassification.from_pretrained("models/bert_model")
+# Use pre-trained BERT (no local files needed)
+MODEL_NAME = "bert-base-uncased"
+
+@st.cache_resource
+def load_model():
+    tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
+    model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
+    return tokenizer, model
+
+tokenizer, model = load_model()
 
 st.set_page_config(page_title="Fake Review Detector", page_icon="🕵️")
 
