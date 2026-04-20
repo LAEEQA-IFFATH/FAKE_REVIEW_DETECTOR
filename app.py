@@ -40,8 +40,8 @@ if st.button("Analyze"):
         probs = torch.softmax(logits, dim=1)
 
         #IMPORTANT: adjust based on your training labels
-        fake_prob = probs[0][0].item()
-        real_prob = probs[0][1].item()
+        real_prob = probs[0][0].item()
+        fake_prob = probs[0][1].item()
 
         st.subheader("Result")
 
