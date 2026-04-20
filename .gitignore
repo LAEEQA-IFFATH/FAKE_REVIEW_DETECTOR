@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+
+#Ignore ALL models completely
+models/
+
+# Other junk
+results/
+logs/
+
+# Serialized files
+*.pkl
