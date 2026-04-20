@@ -2,13 +2,14 @@ import streamlit as st
 import torch
 from transformers import BertTokenizer, BertForSequenceClassification
 
-# Use pre-trained BERT (no local files needed)
-MODEL_NAME = "bert-base-uncased"
+#YOUR trained model from Hugging Face
+MODEL_NAME = "riddlee/fake-review-detector-bert"
 
 @st.cache_resource
 def load_model():
     tokenizer = BertTokenizer.from_pretrained(MODEL_NAME)
-    model = BertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=2)
+    model = BertForSequenceClassification.from_pretrained(MODEL_NAME)
+    model.eval()
     return tokenizer, model
 
 tokenizer, model = load_model()
@@ -38,17 +39,19 @@ if st.button("Analyze"):
         logits = outputs.logits
         probs = torch.softmax(logits, dim=1)
 
-        real_prob = probs[0][0].item()
-        fake_prob = probs[0][1].item()
+        #IMPORTANT: adjust based on your training labels
+        fake_prob = probs[0][0].item()
+        real_prob = probs[0][1].item()
 
         st.subheader("Result")
 
         if fake_prob > real_prob:
-            st.error(f"Fake Review ({fake_prob:.2%})")
+            st.error(f"Fake Review ({fake_prob:.2%} confidence)")
         else:
-            st.success(f"Real Review ({real_prob:.2%})")
+            st.success(f"Real Review ({real_prob:.2%} confidence)")
 
         st.subheader("Confidence Breakdown")
         st.write(f"Fake: {fake_prob:.2%}")
         st.write(f"Real: {real_prob:.2%}")
+
         st.progress(float(max(fake_prob, real_prob)))
